@@ -1,6 +1,8 @@
 version: '3.8'
 
 services:
+
+  #php
   app:
     build:
       context: ./
@@ -10,6 +12,8 @@ services:
     working_dir: /var/www/
     volumes:
       - ../:/var/www
+
+  #web server
   nginx:
     image: nginx:1.19-alpine
     container_name: sudokuSR-nginx
