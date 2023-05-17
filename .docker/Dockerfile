@@ -24,4 +24,3 @@ WORKDIR /var/www
 
 # install npm dependencies
 RUN npm install
-RUN composer update
