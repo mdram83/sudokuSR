@@ -23,4 +23,4 @@ RUN apt install symfony-cli
 WORKDIR /var/www
 
 # install npm dependencies
-RUN npm install
+#RUN npm install
