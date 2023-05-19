@@ -22,5 +22,5 @@ RUN apt install symfony-cli
 # I AM NOT SURE WHAT IT REALLY DOES
 WORKDIR /var/www
 
-# install npm dependencies
-#RUN npm install
+# install dependencies
+RUN npm install
