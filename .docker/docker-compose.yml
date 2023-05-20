@@ -5,8 +5,8 @@ services:
   #php
   app:
     build:
-      context: ./
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: .docker/Dockerfile
     container_name: sudokuSR-app
     restart: always
     working_dir: /var/www/
