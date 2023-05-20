@@ -26,5 +26,3 @@ COPY . .
 
 # install node dependencies
 RUN npm install
-
-CMD ["npm", "run", "watch"]
