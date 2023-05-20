@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('sudokuIndex') }}
+{% endblock %}
+
+{% block body %}
+
+    <h1>Test variable is set to {{ testVariable }}</h1>
+    <div id="root"></div>
+
+{% endblock %}
+
+
+
