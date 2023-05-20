@@ -8,5 +8,3 @@ root.render(
     <Sudoku />
   </React.StrictMode>
 );
-
-console.log('index.js included');
