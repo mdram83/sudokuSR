@@ -24,3 +24,17 @@ services:
       - ../:/var/www
       - ../.docker/.nginx/fastcgi_params:/etc/nginx/fastcgi_params
       - ../.docker/.nginx/conf.d:/etc/nginx/conf.d
+
+  #postgres
+  db:
+    image: postgres:alpine
+    container_name: sudokuSR-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ../.data/postgres/:/var/lib/postgresql/data
