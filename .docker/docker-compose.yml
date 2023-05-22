@@ -28,7 +28,7 @@ services:
   #postgres
   db:
     image: postgres:alpine
-    container_name: sudokuSR-postgres
+    container_name: ${DB_CONTAINER_NAME}
     restart: always
     ports:
       - "5432:5432"

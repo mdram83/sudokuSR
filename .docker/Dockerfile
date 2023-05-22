@@ -11,14 +11,15 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libicu-dev \
-&& docker-php-ext-install intl
+    libpq-dev \
+&& docker-php-ext-install intl pdo_pgsql
 
 # install composer
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
 # install symfony CLI
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
-RUN apt install symfony-cli
+RUN apt-get update && apt-get install symfony-cli
 
 # set workdir
 WORKDIR /var/www
