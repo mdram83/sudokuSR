@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\SudokuDifficulty;
+use App\Entity\Sudoku;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<SudokuDifficulty>
+ * @extends ServiceEntityRepository<Sudoku>
  *
- * @method SudokuDifficulty|null find($id, $lockMode = null, $lockVersion = null)
- * @method SudokuDifficulty|null findOneBy(array $criteria, array $orderBy = null)
- * @method SudokuDifficulty[]    findAll()
- * @method SudokuDifficulty[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Sudoku|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Sudoku|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Sudoku[]    findAll()
+ * @method Sudoku[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SudokuDifficultyRepository extends ServiceEntityRepository
+class SudokuRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, SudokuDifficulty::class);
+        parent::__construct($registry, Sudoku::class);
     }
 
-    public function save(SudokuDifficulty $entity, bool $flush = false): void
+    public function save(Sudoku $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class SudokuDifficultyRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(SudokuDifficulty $entity, bool $flush = false): void
+    public function remove(Sudoku $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class SudokuDifficultyRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return SudokuDifficulty[] Returns an array of SudokuDifficulty objects
+//     * @return Sudoku[] Returns an array of Sudoku objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class SudokuDifficultyRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?SudokuDifficulty
+//    public function findOneBySomeField($value): ?Sudoku
 //    {
 //        return $this->createQueryBuilder('s')
 //            ->andWhere('s.exampleField = :val')
