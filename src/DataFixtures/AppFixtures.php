@@ -9,7 +9,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-
     private ObjectManager $manager;
     private array $sudokuDifficulty = [
         [
