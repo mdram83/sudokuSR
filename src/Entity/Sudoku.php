@@ -23,6 +23,11 @@ class Sudoku
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $createdAt = null;
 
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -33,34 +38,35 @@ class Sudoku
         return $this->hash;
     }
 
-    public function setHash(string $hash): self
+    public function setHash(): self
     {
-        $this->hash = $hash;
-
+        $this->hash = md5(json_encode($this->board));
         return $this;
     }
 
     public function getBoard(): array
     {
-        return $this->board;
+        $board = [];
+        foreach ($this->board as $key => $value) {
+            $coordinates = explode('.', $key);
+            $board[$coordinates[0]][$coordinates[1]] = $value;
+        }
+        return $board;
     }
 
     public function setBoard(array $board): self
     {
-        $this->board = $board;
-
+        foreach ($board as $rowNumber => $row) {
+            foreach ($row as $columnNumber => $value) {
+                $this->board["$rowNumber.$columnNumber"] = $value;
+            }
+        }
+        $this->setHash();
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 }
