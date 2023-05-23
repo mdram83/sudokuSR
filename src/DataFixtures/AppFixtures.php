@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Sudoku;
 use App\Entity\SudokuDifficulty;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
@@ -118,6 +119,13 @@ class AppFixtures extends Fixture
 //        ]],
     ];
 
+    public function __construct(
+        private $difficulties = new ArrayCollection(),
+    )
+    {
+
+    }
+
     public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
@@ -134,19 +142,23 @@ class AppFixtures extends Fixture
             $sudokuDifficulty->setDescription($entry['description']);
 
             $this->manager->persist($sudokuDifficulty);
+
+            $this->difficulties->add($sudokuDifficulty);
         }
         $this->manager->flush();
     }
 
     private function loadSudoku(): void
     {
-        foreach ($this->sudoku as $key => $entry) {
+        foreach ($this->sudoku as $entry) {
             $sudoku = new Sudoku();
             $sudoku->setBoard($entry['board']);
+
+            $difficulty = $this->difficulties->get(array_rand($this->difficulties->toArray()));
+            $sudoku->setDifficulty($difficulty);
 
             $this->manager->persist($sudoku);
         }
         $this->manager->flush();
-
     }
 }

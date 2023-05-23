@@ -23,6 +23,10 @@ class Sudoku
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SudokuDifficulty $difficulty = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -68,5 +72,17 @@ class Sudoku
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    public function getDifficulty(): ?SudokuDifficulty
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(?SudokuDifficulty $difficulty): self
+    {
+        $this->difficulty = $difficulty;
+
+        return $this;
     }
 }
