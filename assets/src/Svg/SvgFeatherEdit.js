@@ -3,8 +3,8 @@ import {styles} from "../Styles/styles";
 
 export const SvgFeatherEdit = (props) => {
 
-    const {'stroke-width': _, ...rest} = styles.general.svg.base;
-    const properties = {'stroke-width': props.strokeWidth ?? styles.general.svg.base["stroke-width"], ...rest};
+    const {'strokeWidth': _, ...rest} = styles.general.svg.base;
+    const properties = {'strokeWidth': props.strokeWidth ?? styles.general.svg.base["strokeWidth"], ...rest};
 
     return (
         <svg {...properties}>
