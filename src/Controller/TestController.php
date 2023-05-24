@@ -11,8 +11,6 @@ class TestController extends AbstractController
     #[Route('/', methods: ['GET'])]
     public function index(): Response
     {
-        return $this->render('sudoku/index.html.twig', [
-            'testVariable' => 'testContent',
-        ]);
+        return $this->render('sudoku/index.html.twig');
     }
 }

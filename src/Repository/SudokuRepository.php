@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Sudoku;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<Sudoku>
@@ -63,4 +64,24 @@ class SudokuRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findOneRandom(): ?Sudoku
+    {
+        if ($id = $this->findRandomId()) {
+            return $this->find($id);
+        }
+        return null;
+    }
+
+    private function findRandomId(): ?int
+    {
+        $postgresSql = 'select id FROM sudoku s, ceil(random() * (select max(id) from sudoku)) rid where s.id = rid';
+
+        try {
+            $stmt = $this->getEntityManager()->getConnection()->prepare($postgresSql);
+            return $stmt->executeQuery()->fetchOne();
+        } catch (Exception) {
+            return null;
+        }
+    }
 }
