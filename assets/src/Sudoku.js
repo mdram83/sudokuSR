@@ -5,8 +5,6 @@ import {GameRepository} from "./Game/GameRepository";
 
 export class Sudoku extends React.Component
 {
-    #gameRepository = new GameRepository();
-
     constructor(props) {
         super(props);
 
@@ -26,7 +24,7 @@ export class Sudoku extends React.Component
     }
 
     componentDidMount() {
-        this.#gameRepository.load(null, null, this.handleLoad);
+        GameRepository.load(null, null, this.handleLoad);
     }
 
     render() {

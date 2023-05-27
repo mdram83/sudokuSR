@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ActiveGame;
 use App\Entity\Sudoku;
 use App\Entity\SudokuDifficulty;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -11,6 +12,7 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture
 {
     private ObjectManager $manager;
+
     private array $sudokuDifficulty = [
         [
             'level' => 10,
@@ -106,6 +108,17 @@ class AppFixtures extends Fixture
             [null, null, null, null, null, null, null, null, 9],
             [7, 6, null, 2, null, null, null, null, null],
         ]],
+        ['board' => [
+            [null, null, null, null, null, null, null, null, null],
+            [null, null, null, 7, null, null, 3, 9, 6],
+            [4, null, null, 8, null, 2, null, 5, null],
+            [null, 8, 5, 4, null, null, null, null, null],
+            [null, null, null, null, 6, 1, null, 2, null],
+            [9, null, null, null, null, null, null, null, null],
+            [null, 2, null, null, 1, null, null, null, null],
+            [null, null, null, null, null, 7, null, null, null],
+            [5, null, null, 9, null, 4, null, 7, null],
+        ]],
 //        ['board' => [
 //            [null, null, null, null, null, null, null, null, null],
 //            [null, null, null, null, null, null, null, null, null],
@@ -118,9 +131,261 @@ class AppFixtures extends Fixture
 //            [null, null, null, null, null, null, null, null, null],
 //        ]],
     ];
+    private array $activeGame = [
+        'sudoku' => null,
+        'anonymousUser' => '1',
+        'initialBoard' => [
+            [4, null, 6, 7, null, null, null, 5, null],
+            [null, null, null, null, null, 8, null, 6, null],
+            [null, null, 8, null, 5, null, 1, null, 2],
+            [9, null, null, 1, null, 5, null, 8, null],
+            [null, null, 7, null, 9, null, 5, null, null],
+            [null, 5, null, 8, null, 4, null, null, 3],
+            [7, null, 4, null, 1, null, 8, null, null],
+            [null, 8, null, 9, null, null, null, null, null],
+            [null, 6, null, null, null, 7, 2, null, 5],
+        ],
+        'board' => [
+            [4, 3, 6, 7, 5, null, null, 5, null],
+            [null, null, null, null, null, 8, null, 6, null],
+            [null, null, 8, null, 5, null, 1, null, 2],
+            [9, null, null, 1, null, 5, null, 8, null],
+            [null, null, 7, null, 9, null, 5, null, null],
+            [null, 5, null, 8, null, 4, null, null, 3],
+            [7, null, 4, null, 1, null, 8, null, null],
+            [null, 8, null, 9, null, null, null, null, null],
+            [null, 6, null, null, null, 7, 2, null, 5],
+        ],
+        'boardErrors' => [
+            [false, false, false, false, true, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false],
+        ],
+        'notes' => [
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [1, 3, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+            [
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null, null],
+            ],
+        ],
+        'notesErrors' => [
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, true, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+            [
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+                [false, false, false, false, false, false, false, false, false],
+            ],
+        ],
+        'emptyCellsCount' => 48,
+        'difficultyLevel' => [
+            'highlightValue' => true,
+            'highlightNotes' => true,
+            'highlightGrid' => true,
+            'highlightErrors' => true,
+            'highlightRemaining' => true,
+            'quickNotesAvailability' => false,
+            'quickNotesRemoval' => true,
+            'undoAvailability' => true,
+        ],
+        'timer' => 100,
+    ];
 
     public function __construct(
         private $difficulties = new ArrayCollection(),
+        private $sudokus = new ArrayCollection(),
     )
     {
 
@@ -131,6 +396,7 @@ class AppFixtures extends Fixture
         $this->manager = $manager;
         $this->loadSudokuDifficulty();
         $this->loadSudoku();
+        $this->loadActiveGame();
     }
 
     private function loadSudokuDifficulty(): void
@@ -158,7 +424,29 @@ class AppFixtures extends Fixture
             $sudoku->setDifficulty($difficulty);
 
             $this->manager->persist($sudoku);
+
+            $this->sudokus->add($sudoku);
         }
+        $this->manager->flush();
+    }
+
+    private function loadActiveGame(): void
+    {
+        $activeGame = new ActiveGame();
+        $activeGame->setAnonymousUser($this->activeGame['anonymousUser']);
+        $activeGame->setInitialBoard($this->activeGame['initialBoard']);
+        $activeGame->setBoard($this->activeGame['board']);
+        $activeGame->setBoardErrors($this->activeGame['boardErrors']);
+        $activeGame->setNotes($this->activeGame['notes']);
+        $activeGame->setNotesErrors($this->activeGame['notesErrors']);
+        $activeGame->setEmptyCellsCount($this->activeGame['emptyCellsCount']);
+        $activeGame->setDifficultyLevel($this->activeGame['difficultyLevel']);
+        $activeGame->setTimer($this->activeGame['timer']);
+
+        $sudoku =  $this->sudokus->get(array_rand($this->sudokus->toArray()));
+        $activeGame->setSudoku($sudoku);
+
+        $this->manager->persist($activeGame);
         $this->manager->flush();
     }
 }

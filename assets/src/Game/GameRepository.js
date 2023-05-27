@@ -2,10 +2,12 @@ import {paths} from "../config/paths";
 
 export class GameRepository
 {
-    load(difficultyId = null, gameId = null, callback) {
+    static load(difficultyId = null, gameId = null, callback) {
 
         let gameSet = {
+            id: null,
             initialBoard: null,
+            difficulty: undefined,
         };
 
         const xhr = new XMLHttpRequest();
@@ -16,7 +18,10 @@ export class GameRepository
                 if (xhr.status === 200) {
 
                     let json = JSON.parse(xhr.responseText);
+
+                    gameSet.id = json.id;
                     gameSet.initialBoard = json.board;
+                    gameSet.difficulty = json.difficulty;
 
                     callback({isLoaded: true, isError: false, gameSet: gameSet});
 
@@ -32,7 +37,7 @@ export class GameRepository
         xhr.send();
     }
 
-    save() {
+    static save() {
 
     }
 }

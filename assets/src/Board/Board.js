@@ -535,6 +535,8 @@ export class Board extends React.Component {
 
     render() {
 
+        console.log(this.state);
+
         return (
             <div className="flex justify-center sm:justify-start">
                 <div id="Board"

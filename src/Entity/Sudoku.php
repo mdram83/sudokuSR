@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SudokuRepository;
+use App\Service\Game\SudokuKeysCoder;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -50,21 +51,12 @@ class Sudoku
 
     public function getBoard(): array
     {
-        $board = [];
-        foreach ($this->board as $key => $value) {
-            $coordinates = explode('.', $key);
-            $board[$coordinates[0]][$coordinates[1]] = $value;
-        }
-        return $board;
+        return SudokuKeysCoder::decodeBoard($this->board);
     }
 
     public function setBoard(array $board): self
     {
-        foreach ($board as $rowNumber => $row) {
-            foreach ($row as $columnNumber => $value) {
-                $this->board["$rowNumber.$columnNumber"] = $value;
-            }
-        }
+        $this->board = SudokuKeysCoder::encodeBoard($board);
         $this->setHash();
         return $this;
     }
