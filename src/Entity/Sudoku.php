@@ -19,7 +19,7 @@ class Sudoku
     private ?string $hash = null;
 
     #[ORM\Column]
-    private array $board = [];
+    private array $initialBoard = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $createdAt = null;
@@ -45,18 +45,18 @@ class Sudoku
 
     public function setHash(): self
     {
-        $this->hash = md5(json_encode($this->board));
+        $this->hash = md5(json_encode($this->initialBoard));
         return $this;
     }
 
-    public function getBoard(): array
+    public function getInitialBoard(): array
     {
-        return SudokuKeysCoder::decodeBoard($this->board);
+        return SudokuKeysCoder::decodeBoard($this->initialBoard);
     }
 
-    public function setBoard(array $board): self
+    public function setInitialBoard(array $board): self
     {
-        $this->board = SudokuKeysCoder::encodeBoard($board);
+        $this->initialBoard = SudokuKeysCoder::encodeBoard($board);
         $this->setHash();
         return $this;
     }

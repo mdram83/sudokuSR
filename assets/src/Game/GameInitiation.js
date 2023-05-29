@@ -1,6 +1,8 @@
 import React from 'react';
 import {MessageButton} from "../Board/MessageButton";
-import {Sudoku} from "../Sudoku";
+import {GameNew} from "./GameNew";
+import {GameResume} from "./GameResume";
+import {Board} from "../Board/Board";
 
 export class GameInitiation extends React.Component
 {
@@ -9,44 +11,45 @@ export class GameInitiation extends React.Component
 
         this.state = {
             gameStarted: false,
-            previousGameAvailable: false,
-            previousGameLoaded: false,
-            previousGameError: false,
-            previousGame: {},
-            previousGameSelected: false,
-            newGameSelected: false,
+            newGame: true,
+            gameSet: null,
         }
     }
 
     newGame() {
         this.setState({
             gameStarted: true,
-            newGameSelected: true,
+            newGame: true,
         });
     }
 
-    // TODO loading previous game, enable button if available, pass game to Sudoku or directly to Board
+    resumeGame(gameSet, parent) {
+        parent.setState({
+            gameStarted: true,
+            newGame: false,
+            gameSet: gameSet,
+        });
+    }
 
     render() {
         return (
             <div>
+
                 {!this.state.gameStarted &&
                     <div className="flex justify-center sm:justify-start m-0 p-2 focus:outline-none grid grid-cols-1 gap-0 w-72">
-
-                        <MessageButton
-                            // action={() => this.continueGame()}
-                            message="Continue..."
-                        />
-
-                        <MessageButton
-                            action={() => this.newGame()}
-                            message="New Game"
-                        />
-
+                        <MessageButton action={() => this.newGame()} message="New Game" />
+                        <GameResume callback={this.resumeGame} parent={this} />
                     </div>
                 }
 
-                {this.state.gameStarted && <Sudoku />}
+                {this.state.gameStarted && this.state.newGame &&
+                    <GameNew />
+                }
+
+                {this.state.gameStarted && !this.state.newGame &&
+                    <Board gameSet={this.state.gameSet} />
+                }
+
             </div>
         );
     }

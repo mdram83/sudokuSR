@@ -13,10 +13,10 @@ export class Board extends React.Component {
         super(props);
 
         const initialBoard = copyArray(props.gameSet.initialBoard);
-        const board = copyArray(props.gameSet.initialBoard);
-        const boardErrors = board.map(row => row.map(() => false));
-        const notes = board.map(row => row.map(() => new Array(9).fill(null)));
-        const notesErrors = notes.map(row => row.map((notes) => notes.map(() => false)));
+        const board = props.gameSet.board ?? copyArray(props.gameSet.initialBoard);
+        const boardErrors = props.gameSet.boardErrors ?? board.map(row => row.map(() => false));
+        const notes = props.gameSet.notes ?? board.map(row => row.map(() => new Array(9).fill(null)));
+        const notesErrors = props.gameSet.notesErrors ?? notes.map(row => row.map((notes) => notes.map(() => false)));
 
         const emptyCellsCount = board.reduce(
             (total, row) => total - row.reduce((subtotal, value) => subtotal + (value ? 1 : 0), 0), 81
@@ -47,10 +47,10 @@ export class Board extends React.Component {
             emptyCellsCount: emptyCellsCount,
             notesMode: false,
             win: false,
-            difficultyLevel: this.props.difficultyLevel,
+            difficultyLevel: this.props.gameSet.difficultyLevel ?? this.props.difficultyLevel,
             history: history,
             timer: {
-                duration: 0,
+                duration: this.props.gameSet.timer ?? 0,
                 on: true,
             },
         }
@@ -534,8 +534,6 @@ export class Board extends React.Component {
     }
 
     render() {
-
-        console.log(this.state);
 
         return (
             <div className="flex justify-center sm:justify-start">

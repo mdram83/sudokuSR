@@ -1,9 +1,9 @@
 import React from 'react';
-import {Board} from "./Board/Board";
-import {difficultyLevel} from "./Game/difficultyLevel";
-import {GameRepository} from "./Game/GameRepository";
+import {Board} from "../Board/Board";
+import {difficultyLevel} from "./difficultyLevel";
+import {GameRepository} from "./GameRepository";
 
-export class Sudoku extends React.Component
+export class GameNew extends React.Component
 {
     constructor(props) {
         super(props);
@@ -24,7 +24,7 @@ export class Sudoku extends React.Component
     }
 
     componentDidMount() {
-        GameRepository.load(null, null, this.handleLoad);
+        GameRepository.load(null, false, this.handleLoad);
     }
 
     render() {
@@ -34,7 +34,7 @@ export class Sudoku extends React.Component
         } else if (this.state.isError) {
             return <div>Error loading Sudoku</div>;
         } else {
-            return <div><Board difficultyLevel={difficultyLevel} gameSet={this.state.gameSet} /></div>;
+            return <Board difficultyLevel={difficultyLevel} gameSet={this.state.gameSet} />;
         }
     }
 }

@@ -1,6 +1,8 @@
 export const paths = {
     loadRandom: {
-        method: 'GET',
         url: '/ajax/game/random',
+    },
+    resumeGame: {
+        url: '/ajax/game/continue',
     },
 }

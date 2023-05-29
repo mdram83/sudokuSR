@@ -418,7 +418,7 @@ class AppFixtures extends Fixture
     {
         foreach ($this->sudoku as $entry) {
             $sudoku = new Sudoku();
-            $sudoku->setBoard($entry['board']);
+            $sudoku->setInitialBoard($entry['board']);
 
             $difficulty = $this->difficulties->get(array_rand($this->difficulties->toArray()));
             $sudoku->setDifficulty($difficulty);
