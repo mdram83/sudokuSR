@@ -1,5 +1,5 @@
 import React from "react";
-import {styles} from "../../Styles/styles";
+import {styles} from "../../styles/styles";
 import {SvgFeatherEdit} from "../../Svg/SvgFeatherEdit";
 
 export const ActionToggleNotesMode = (props) => {

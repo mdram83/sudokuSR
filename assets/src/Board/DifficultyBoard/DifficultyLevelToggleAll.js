@@ -1,5 +1,5 @@
 import React from "react";
-import {styles} from "../../Styles/styles";
+import {styles} from "../../styles/styles";
 import {SvgFeatherToggleLeft} from "../../Svg/SvgFeatherToggleLeft";
 
 export const DifficultyLevelToggleAll = (props) => {

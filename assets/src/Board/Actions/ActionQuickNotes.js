@@ -1,5 +1,5 @@
 import React from "react";
-import {styles} from "../../Styles/styles";
+import {styles} from "../../styles/styles";
 import {SvgFeatherFastForward} from "../../Svg/SvgFeatherFastForward";
 
 export const ActionQuickNotes = (props) => {

@@ -1,5 +1,5 @@
 import React from "react";
-import {styles} from "../../Styles/styles";
+import {styles} from "../../styles/styles";
 import {SvgFeatherRotateCcw} from "../../Svg/SvgFeatherRotateCcw";
 
 export const DifficultyLevelUndoAvailability = (props) => {
