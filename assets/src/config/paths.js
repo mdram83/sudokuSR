@@ -5,4 +5,10 @@ export const paths = {
     resumeGame: {
         url: '/ajax/game/continue',
     },
+    saveGame: {
+        url: '/ajax/game/saveGame',
+    },
+    saveScore: {
+        url: '/ajax/game/saveScore',
+    },
 }

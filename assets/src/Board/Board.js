@@ -7,6 +7,8 @@ import {Keypad} from "./Keypad";
 import {Actions} from "./Actions/Actions";
 import {DifficultyBoard} from "./DifficultyBoard/DifficultyBoard";
 import {MessageButton} from "./MessageButton";
+import {configSave} from "../config/save";
+import {GameRepository} from "../Game/GameRepository";
 
 export class Board extends React.Component {
     constructor(props) {
@@ -53,6 +55,11 @@ export class Board extends React.Component {
                 duration: this.props.gameSet.timer ?? 0,
                 on: true,
             },
+            save: {
+                timer: this.props.gameSet.timer ?? 0,
+                consecutiveSaveErrors: 0,
+                savedOnWin: false,
+            },
         }
     }
 
@@ -74,6 +81,41 @@ export class Board extends React.Component {
             });
 
         }, 1000);
+
+        setInterval(() => {
+
+            if (this.state.win && this.state.save.savedOnWin) {
+                return;
+            }
+
+            if (this.state.timer.duration <= this.state.save.timer && !this.state.win) {
+                return;
+            }
+
+            if (this.state.save.consecutiveSaveErrors >= configSave.saveRetries) {
+                return; // TODO some message for user
+            }
+
+            GameRepository.save({}, this.state.win, this.handleSave);
+            // TODO handle 200 and 400/500 responses (later with some message)
+            // TODO produce a saveable gameSet
+
+            this.setState(state => {
+                return ({
+                    save: {
+                        timer: state.timer.duration,
+                        consecutiveSaveErrors: 0,
+                        savedOnWin: state.win,
+                    },
+                });
+            });
+
+        }, configSave.saveFrequency);
+    }
+
+    handleSave = ({saved} = {}) => {
+        // TODO write a logic here to handle save status
+        console.log('saved:', saved);
     }
 
     toggleTimer() {

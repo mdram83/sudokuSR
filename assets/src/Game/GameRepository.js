@@ -46,7 +46,27 @@ export class GameRepository
         xhr.send();
     }
 
-    static save() {
+    static save(gameSet, win = false, callback) {
 
+        const url = win === true ? paths.saveScore.url : paths.saveGame.url;
+        const xhr = new XMLHttpRequest();
+
+        xhr.addEventListener("readystatechange", () => {
+            if (xhr.readyState === 4) {
+
+                if (xhr.status === 200) {
+
+                    callback({saved: true});
+
+                } else {
+                    callback({saved: false});
+                }
+            }
+        });
+
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.send();
     }
 }
