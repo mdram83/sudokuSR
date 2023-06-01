@@ -19,7 +19,7 @@ class AjaxLoadGameController extends AbstractController
     #[Route('/ajax/game/continue', methods: ['GET'])]
     public function continue(ActiveGameRepository $repository): Response
     {
-        // TODO add logic to detect logged or anonymous user id
+        // TODO add logic to detect logged or anonymous user id (first handle game saves)
         return $this->json($repository->findOneBy(['anonymousUser' => '1']));
     }
 

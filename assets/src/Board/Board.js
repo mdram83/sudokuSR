@@ -84,6 +84,8 @@ export class Board extends React.Component {
 
         setInterval(() => {
 
+            console.log('state prior to save:', this.state.save); // TODO remove this temp
+
             if (this.state.win && this.state.save.savedOnWin) {
                 return;
             }
@@ -93,29 +95,37 @@ export class Board extends React.Component {
             }
 
             if (this.state.save.consecutiveSaveErrors >= configSave.saveRetries) {
+                console.log('not saving, too many errors');
                 return; // TODO some message for user
             }
 
-            GameRepository.save({}, this.state.win, this.handleSave);
-            // TODO handle 200 and 400/500 responses (later with some message)
-            // TODO produce a saveable gameSet
-
-            this.setState(state => {
-                return ({
-                    save: {
-                        timer: state.timer.duration,
-                        consecutiveSaveErrors: 0,
-                        savedOnWin: state.win,
-                    },
-                });
-            });
+            const gameSet = {
+                sudoku: this.props.gameSet.sudoku,
+                initialBoard: this.state.initialBoard,
+                board: this.state.board,
+                boardErrors: this.state.boardErrors,
+                notes: this.state.notes,
+                notesErrors: this.state.notesErrors,
+                emptyCellsCount: this.state.emptyCellsCount,
+                difficultyLevel: this.state.difficultyLevel,
+                timer: this.state.timer,
+            }
+            GameRepository.save(gameSet, this.state.win, this.handleSave);
 
         }, configSave.saveFrequency);
     }
 
     handleSave = ({saved} = {}) => {
-        // TODO write a logic here to handle save status
-        console.log('saved:', saved);
+        this.setState(state => {
+            return ({
+                save: {
+                    timer: saved ? state.timer.duration : state.save.timer,
+                    consecutiveSaveErrors: saved ? 0 : state.save.consecutiveSaveErrors + 1,
+                    savedOnWin: saved ? state.win : false,
+                },
+            });
+        });
+        console.log('saved:', saved); // TODO remove this temp
     }
 
     toggleTimer() {
