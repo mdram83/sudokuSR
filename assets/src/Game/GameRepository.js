@@ -55,9 +55,7 @@ export class GameRepository
             if (xhr.readyState === 4) {
 
                 if (xhr.status === 200) {
-
                     callback({saved: true});
-
                 } else {
                     callback({saved: false});
                 }
@@ -65,8 +63,8 @@ export class GameRepository
         });
 
         xhr.open('POST', url, true);
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Content-type", "application/json");
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.send();
+        xhr.send(JSON.stringify(gameSet));
     }
 }

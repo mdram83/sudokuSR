@@ -84,8 +84,6 @@ export class Board extends React.Component {
 
         setInterval(() => {
 
-            console.log('state prior to save:', this.state.save); // TODO remove this temp
-
             if (this.state.win && this.state.save.savedOnWin) {
                 return;
             }
@@ -100,7 +98,7 @@ export class Board extends React.Component {
             }
 
             const gameSet = {
-                sudoku: this.props.gameSet.sudoku,
+                sudokuId: this.props.gameSet.sudoku.id,
                 initialBoard: this.state.initialBoard,
                 board: this.state.board,
                 boardErrors: this.state.boardErrors,
@@ -108,7 +106,7 @@ export class Board extends React.Component {
                 notesErrors: this.state.notesErrors,
                 emptyCellsCount: this.state.emptyCellsCount,
                 difficultyLevel: this.state.difficultyLevel,
-                timer: this.state.timer,
+                timerDuration: this.state.timer.duration,
             }
             GameRepository.save(gameSet, this.state.win, this.handleSave);
 
@@ -125,7 +123,6 @@ export class Board extends React.Component {
                 },
             });
         });
-        console.log('saved:', saved); // TODO remove this temp
     }
 
     toggleTimer() {
