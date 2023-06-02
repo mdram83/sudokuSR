@@ -13,20 +13,20 @@ class GameController extends AbstractController
     #[Route('/play/', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $content = $this->renderView('sudoku/index.html.twig');
-        $response = new Response($content, 200);
-
-        // TODO set cookie name in config for bellow and in AjaxLoadGameController
-
-        if (!$request->cookies->get('ANONYMOUS_USER')) {
-            $response->headers->setCookie(new Cookie(
-                'ANONYMOUS_USER',
-                md5(rand().time()),
-                time() + 2 * 24 * 3600
-            ));
-        }
+        $response = new Response($this->renderView('sudoku/index.html.twig'), 200);
+        $response->headers->setCookie($this->recreateAnonymousUserCookie($request));
 
         return $response;
+    }
 
+    private function recreateAnonymousUserCookie(Request $request): Cookie
+    {
+        $cookieName = $this->getParameter('app.anonymous_user_cookie.name');
+
+        return new Cookie(
+            $cookieName,
+            $request->cookies->get($cookieName) ?? md5(rand() . time()),
+            time() + $this->getParameter('app.anonymous_user_cookie.duration')
+        );
     }
 }

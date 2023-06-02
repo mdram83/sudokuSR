@@ -21,8 +21,9 @@ class AjaxLoadGameController extends AbstractController
     #[Route('/ajax/game/continue', methods: ['GET'])]
     public function continue(ActiveGameRepository $repository, Request $request): Response
     {
-        // TODO replace hardcoded cookie name with config
-        $userId = $request->cookies->get('ANONYMOUS_USER');
+        if (!$userId = $this->getAnonymousUserId($request)) {
+            return $this->json(false, 400);
+        }
         return $this->json($repository->findOneBy(['anonymousUser' => $userId]));
     }
 
@@ -36,7 +37,10 @@ class AjaxLoadGameController extends AbstractController
         $gameSet = json_decode($request->getContent(), true);
         // TODO validate inputs
 
-        $userId = $request->cookies->get('ANONYMOUS_USER');
+        if (!$userId = $this->getAnonymousUserId($request)) {
+            return $this->json(false, 400);
+        }
+
         $this->saveActiveGame($activeGameRepository, $sudokuRepository, $gameSet, $userId);
 
         return $this->json(true);
@@ -76,5 +80,10 @@ class AjaxLoadGameController extends AbstractController
         $activeGameRepository->save($activeGame, true);
 
         return $activeGame;
+    }
+
+    private function getAnonymousUserId(Request $request): ?string
+    {
+        return $request->cookies->get($this->getParameter('app.anonymous_user_cookie.name'));
     }
 }
