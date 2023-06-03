@@ -84,11 +84,11 @@ export class Board extends React.Component {
 
         setInterval(() => {
 
-            if (this.state.win && this.state.save.savedOnWin) {
+            if (this.state.save.savedOnWin) {
                 return;
             }
 
-            if (this.state.timer.duration <= this.state.save.timer && !this.state.win) {
+            if (!this.state.timer.on && !this.state.win) {
                 return;
             }
 
