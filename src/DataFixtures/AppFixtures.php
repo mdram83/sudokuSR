@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\ActiveGame;
+use App\Entity\FinishedGame;
 use App\Entity\Sudoku;
 use App\Entity\SudokuDifficulty;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -397,6 +398,7 @@ class AppFixtures extends Fixture
         $this->loadSudokuDifficulty();
         $this->loadSudoku();
         $this->loadActiveGame();
+        $this->loadFinishedGame();
     }
 
     private function loadSudokuDifficulty(): void
@@ -443,10 +445,28 @@ class AppFixtures extends Fixture
         $activeGame->setDifficultyLevel($this->activeGame['difficultyLevel']);
         $activeGame->setTimer($this->activeGame['timer']);
 
-        $sudoku =  $this->sudokus->get(array_rand($this->sudokus->toArray()));
+        $sudoku = $this->sudokus->get(array_rand($this->sudokus->toArray()));
         $activeGame->setSudoku($sudoku);
 
-        $this->manager->persist($activeGame);
+        $this->saveObject($activeGame);
+    }
+
+    private function loadFinishedGame(): void
+    {
+        $finishedGame = new FinishedGame();
+        $finishedGame->setAnonymousUser($this->activeGame['anonymousUser']);
+        $finishedGame->setTimer(330);
+        $finishedGame->setFinishedAt(new \DateTimeImmutable('now'));
+
+        $sudoku = $this->sudokus->get(array_rand($this->sudokus->toArray()));
+        $finishedGame->setSudoku($sudoku);
+
+        $this->saveObject($finishedGame);
+    }
+
+    private function saveObject(object $entity): void
+    {
+        $this->manager->persist($entity);
         $this->manager->flush();
     }
 }
