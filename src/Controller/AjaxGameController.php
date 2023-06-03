@@ -18,7 +18,6 @@ class AjaxGameController extends AbstractController
     #[Route('/ajax/game/random', methods: ['GET'])]
     public function start(SudokuRepository $repository): Response
     {
-        // TODO this query not working when indexes in sudoku are not in order, FIX IT!
         return $this->json($repository->findOneRandom());
     }
 
