@@ -6,6 +6,10 @@ use App\Repository\FinishedGameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FinishedGameRepository::class)]
+#[ORM\UniqueConstraint(
+    name: 'finished_game_unique_idx',
+    columns: ['sudoku_id', 'anonymous_user']
+)]
 class FinishedGame
 {
     #[ORM\Id]

@@ -10,6 +10,7 @@ use App\Repository\SudokuRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AjaxGameController extends AbstractController
@@ -17,16 +18,14 @@ class AjaxGameController extends AbstractController
     #[Route('/ajax/game/random', methods: ['GET'])]
     public function start(SudokuRepository $repository): Response
     {
+        // TODO this query not working when indexes in sudoku are not in order, FIX IT!
         return $this->json($repository->findOneRandom());
     }
 
     #[Route('/ajax/game/continue', methods: ['GET'])]
     public function continue(ActiveGameRepository $repository, Request $request): Response
     {
-        if (!$userId = $this->getAnonymousUserId($request)) {
-            return $this->json(false, 400);
-        }
-        return $this->json($repository->findOneBy(['anonymousUser' => $userId]));
+        return $this->json($repository->findOneBy(['anonymousUser' => $this->getAnonymousUserId($request)]));
     }
 
     #[Route('/ajax/game/saveGame', methods: ['POST'])]
@@ -39,11 +38,7 @@ class AjaxGameController extends AbstractController
         $gameSet = json_decode($request->getContent(), true);
         // TODO validate inputs
 
-        if (!$userId = $this->getAnonymousUserId($request)) {
-            return $this->json(false, 400);
-        }
-
-        $this->saveActiveGame($activeGameRepository, $sudokuRepository, $gameSet, $userId);
+        $this->saveActiveGame($activeGameRepository, $sudokuRepository, $gameSet, $this->getAnonymousUserId($request));
 
         return $this->json(true);
     }
@@ -59,9 +54,7 @@ class AjaxGameController extends AbstractController
         $gameSet = json_decode($request->getContent(), true);
         // TODO validate inputs
 
-        if (!$userId = $this->getAnonymousUserId($request)) {
-            return $this->json(false, 400);
-        }
+        $userId = $this->getAnonymousUserId($request);
 
         $this->saveFinishedGame($finishedGameRepository, $sudokuRepository, $gameSet, $userId);
 
@@ -128,6 +121,9 @@ class AjaxGameController extends AbstractController
 
     private function getAnonymousUserId(Request $request): ?string
     {
-        return $request->cookies->get($this->getParameter('app.anonymous_user_cookie.name'));
+        if (!$userId = $request->cookies->get($this->getParameter('app.anonymous_user_cookie.name'))) {
+            throw new BadRequestHttpException('', null, 400);
+        }
+        return $userId;
     }
 }

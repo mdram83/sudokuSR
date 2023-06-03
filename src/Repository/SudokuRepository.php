@@ -75,7 +75,7 @@ class SudokuRepository extends ServiceEntityRepository
 
     private function findRandomId(): ?int
     {
-        $postgresSql = 'select id FROM sudoku s, ceil(random() * (select max(id) from sudoku)) rid where s.id = rid';
+        $postgresSql = 'select id FROM sudoku s, ceil(random() * (select max(id) from sudoku)) rid where s.id >= rid limit 1';
 
         try {
             $stmt = $this->getEntityManager()->getConnection()->prepare($postgresSql);
