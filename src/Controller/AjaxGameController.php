@@ -52,6 +52,7 @@ class AjaxGameController extends AbstractController
     {
         $gameSet = json_decode($request->getContent(), true);
         // TODO validate inputs
+        // TODO consider validating final board against initial board and checking win status in backend
 
         $userId = $this->getAnonymousUserId($request);
 
@@ -78,7 +79,8 @@ class AjaxGameController extends AbstractController
         $activeGame->setSudoku($sudokuRepository->find($gameSet['sudokuId']));
         $activeGame->setAnonymousUser($userId);
 
-        $activeGame->setInitialBoard($gameSet['initialBoard']);
+        $activeGame->setInitialBoard($gameSet['initialBoard']); // TODO consider taking this from sudoku object
+
         $activeGame->setBoard($gameSet['board']);
         $activeGame->setBoardErrors($gameSet['boardErrors']);
         $activeGame->setNotes($gameSet['notes']);
