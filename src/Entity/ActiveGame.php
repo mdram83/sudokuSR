@@ -6,6 +6,7 @@ use App\Repository\ActiveGameRepository;
 use App\Service\Game\SudokuKeysCoder;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\IsValidSudokuBoard;
 
 #[ORM\Entity(repositoryClass: ActiveGameRepository::class)]
 class ActiveGame
@@ -75,6 +76,7 @@ class ActiveGame
         return $this;
     }
 
+    #[IsValidSudokuBoard]
     public function getBoard(): array
     {
         return SudokuKeysCoder::decodeBoard($this->board);

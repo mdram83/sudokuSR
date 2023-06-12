@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ActiveGame;
 use App\Entity\FinishedGame;
+use App\Entity\Sudoku;
 use App\Repository\ActiveGameRepository;
 use App\Repository\FinishedGameRepository;
 use App\Repository\SudokuRepository;
@@ -12,9 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AjaxGameController extends AbstractController
 {
+    private ValidatorInterface $validator;
+
     #[Route('/ajax/game/random', methods: ['GET'])]
     public function start(SudokuRepository $repository): Response
     {
@@ -31,12 +35,12 @@ class AjaxGameController extends AbstractController
     public function saveGame(
         ActiveGameRepository $activeGameRepository,
         SudokuRepository $sudokuRepository,
-        Request $request
+        Request $request,
+        ValidatorInterface $validator
     ): Response
     {
+        $this->validator = $validator;
         $gameSet = json_decode($request->getContent(), true);
-        // TODO validate inputs
-
         $this->saveActiveGame($activeGameRepository, $sudokuRepository, $gameSet, $this->getAnonymousUserId($request));
 
         return $this->json(true);
@@ -76,11 +80,27 @@ class AjaxGameController extends AbstractController
             $activeGame = new ActiveGame();
         }
 
-        $activeGame->setSudoku($sudokuRepository->find($gameSet['sudokuId']));
+        $sudoku = $sudokuRepository->find($gameSet['sudokuId']);
+        $activeGame = $this->setActiveGameParams($activeGame, $gameSet, $sudoku, $userId);
+
+        // TODO finish validation (all params coming from frontend)
+
+        $errors = $this->validator->validate($activeGame);
+        if (count($errors) > 0) {
+            $this->throwBadRequest();
+        }
+
+        $activeGameRepository->save($activeGame, true);
+
+        return $activeGame;
+    }
+
+    private function setActiveGameParams(ActiveGame $activeGame, array $gameSet, Sudoku $sudoku, string $userId): ActiveGame
+    {
         $activeGame->setAnonymousUser($userId);
+        $activeGame->setSudoku($sudoku);
 
-        $activeGame->setInitialBoard($gameSet['initialBoard']); // TODO consider taking this from sudoku object
-
+        $activeGame->setInitialBoard($gameSet['initialBoard']);
         $activeGame->setBoard($gameSet['board']);
         $activeGame->setBoardErrors($gameSet['boardErrors']);
         $activeGame->setNotes($gameSet['notes']);
@@ -88,8 +108,6 @@ class AjaxGameController extends AbstractController
         $activeGame->setEmptyCellsCount($gameSet['emptyCellsCount']);
         $activeGame->setDifficultyLevel($gameSet['difficultyLevel']);
         $activeGame->setTimer($gameSet['timerDuration']);
-
-        $activeGameRepository->save($activeGame, true);
 
         return $activeGame;
     }
@@ -123,8 +141,13 @@ class AjaxGameController extends AbstractController
     private function getAnonymousUserId(Request $request): ?string
     {
         if (!$userId = $request->cookies->get($this->getParameter('app.anonymous_user_cookie.name'))) {
-            throw new BadRequestHttpException('', null, 400);
+            $this->throwBadRequest();
         }
         return $userId;
+    }
+
+    private function throwBadRequest(string $message = '', int $code = 400): void
+    {
+        throw new BadRequestHttpException($message, null, 400);
     }
 }

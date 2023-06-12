@@ -12,7 +12,7 @@ class SudokuKeysCoder
 
         foreach ($board as $rowNumber => $row) {
             foreach ($row as $columnNumber => $value) {
-                $encodedBoard[$rowNumber.static::$separator.$columnNumber] = $value;
+                $encodedBoard[$rowNumber . static::$separator . $columnNumber] = $value;
             }
         }
 
