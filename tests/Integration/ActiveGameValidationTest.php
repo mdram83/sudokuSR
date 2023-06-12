@@ -5,33 +5,17 @@ namespace App\Tests\Integration;
 use App\Entity\ActiveGame;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ActiveGameValidationTest extends KernelTestCase
 {
-    private array $boardCorrect = [
-        [4, null, 6, 7, null, null, null, 5, null],
-        [null, null, null, null, null, 8, null, 6, null],
-        [null, null, 8, null, 5, null, 1, null, 2],
-        [9, null, null, 1, null, 5, null, 8, null],
-        [null, null, 7, null, 9, null, 5, null, null],
-        [null, 5, null, 8, null, 4, null, null, 3],
-        [7, null, 4, null, 1, null, 8, null, null],
-        [null, 8, null, 9, null, null, null, null, null],
-        [null, 6, null, null, null, 7, 2, null, 5],
-    ];
+    private array $boardRowCorrect   = [4, null, 6, 7, null, null, null, 5, null];
+    private array $boardRowIncorrect = [4, null, 6, 7, null, null, null, 5,    0];
+    private array $boardErrorsRowCorrect   = [false, false, false, false, false, false, false, false, true];
+    private array $boardErrorsRowIncorrect = [false, false, false, false, false, false, false, false, null];
 
-    private array $boardIncorrect = [
-        [0, null, 6, 7, null, null, null, 5, null],
-        [0, null, null, null, null, 8, null, 6, null],
-        [0, null, 8, null, 5, null, 1, null, 2],
-        [0, null, null, 1, null, 5, null, 8, null],
-        [0, null, 7, null, 9, null, 5, null, null],
-        [0, 5, null, 8, null, 4, null, null, 3],
-        [0, null, 4, null, 1, null, 8, null, null],
-        [0, 8, null, 9, null, null, null, null, null],
-        [0, 6, null, null, null, 7, 2, null, 5],
-    ];
+    private array $board;
+    private array $initialBoard;
+    private array $boardErrors;
 
     private ValidatorInterface $validator;
     private ActiveGame $activeGame;
@@ -42,19 +26,52 @@ final class ActiveGameValidationTest extends KernelTestCase
         $container = self::getContainer();
         $this->validator = $container->get(ValidatorInterface::class);
         $this->activeGame = new ActiveGame();
+    }
 
+    private function configureActiveGame(array $boardRow, array $initialBoard, array $boardErrorsRow): void
+    {
+        $this->board = array_fill(0, 9, $boardRow);
+        $this->initialBoard = array_fill(0, 9, $initialBoard);
+        $this->boardErrors = array_fill(0, 9, $boardErrorsRow);
+
+        $this->populateValues();
+    }
+
+    private function populateValues(): void
+    {
+        $this->activeGame->setBoard($this->board);
+        $this->activeGame->setInitialBoard($this->initialBoard);
+        $this->activeGame->setBoardErrors($this->boardErrors);
     }
 
     public function testCorrectBoardNoErrors(): void
     {
-        $this->activeGame->setBoard($this->boardCorrect);
+        $this->configureActiveGame($this->boardRowCorrect, $this->boardRowCorrect, $this->boardErrorsRowCorrect);
+
         $errors = $this->validator->validate($this->activeGame);
         $this->assertCount(0, $errors);
     }
 
-    public function testIncorrectBoardHasErrors(): void
+    public function testIncorrectBoardHasError(): void
     {
-        $this->activeGame->setBoard($this->boardIncorrect);
+        $this->configureActiveGame($this->boardRowIncorrect, $this->boardRowCorrect, $this->boardErrorsRowCorrect);
+
+        $errors = $this->validator->validate($this->activeGame);
+        $this->assertCount(1, $errors);
+    }
+
+    public function testIncorrectInitialBoardHasError(): void
+    {
+        $this->configureActiveGame($this->boardRowCorrect, $this->boardRowIncorrect, $this->boardErrorsRowCorrect);
+
+        $errors = $this->validator->validate($this->activeGame);
+        $this->assertCount(1, $errors);
+    }
+
+    public function testIncorrectBoardErrorsHasError(): void
+    {
+        $this->configureActiveGame($this->boardRowCorrect, $this->boardRowCorrect, $this->boardErrorsRowIncorrect);
+
         $errors = $this->validator->validate($this->activeGame);
         $this->assertCount(1, $errors);
     }

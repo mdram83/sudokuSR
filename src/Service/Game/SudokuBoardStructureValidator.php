@@ -10,6 +10,22 @@ class SudokuBoardStructureValidator
 
     public static function isValidSudokuBoard(array $board): bool
     {
+        return static::hasRight9x9Structure(
+            $board,
+            __NAMESPACE__ . '\SudokuBoardStructureValidator::hasRightBoardValue'
+        );
+    }
+
+    public static function isValidSudokuBoardErrors(array $board): bool
+    {
+        return static::hasRight9x9Structure(
+            $board,
+            __NAMESPACE__ . '\SudokuBoardStructureValidator::hasRightBoardErrorsValue'
+        );
+    }
+
+    private static function hasRight9x9Structure(array $board, callable $callback): bool
+    {
         if (!static::hasRightSize($board)) {
             return false;
         }
@@ -26,7 +42,7 @@ class SudokuBoardStructureValidator
 
             foreach ($row as $value) {
 
-                if (!static::hasRightBoardValue($value)) {
+                if (!call_user_func($callback, $value)) {
                     return false;
                 }
             }
@@ -46,5 +62,10 @@ class SudokuBoardStructureValidator
             $value === null
             || $value === ''
             || ((int) $value >= static::$minBoardValue && (int) $value <= static::$maxBoardValue));
+    }
+
+    private static function hasRightBoardErrorsValue(bool|string|null $value): bool
+    {
+        return is_bool($value);
     }
 }
