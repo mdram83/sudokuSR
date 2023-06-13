@@ -8,8 +8,6 @@ class SudokuBoardStructureValidator
     private static int $minBoardValue = 1;
     private static int $maxBoardValue = 9;
 
-    // TODO implement notesErrors validation methods, related constraints, validators, tests and add assert in Entity
-
     public static function isValidSudokuBoard(array $board): bool
     {
         return static::hasRight9x9Structure(
@@ -22,7 +20,7 @@ class SudokuBoardStructureValidator
     {
         return static::hasRight9x9Structure(
             $boardErrors,
-            SudokuBoardStructureValidator::class . '::hasRightBoardErrorsValue'
+            SudokuBoardStructureValidator::class . '::hasRightErrorsValue'
         );
     }
 
@@ -31,6 +29,14 @@ class SudokuBoardStructureValidator
         return static::hasRight9x9Structure(
             $notes,
             SudokuBoardStructureValidator::class . '::hasRightNotesValues'
+        );
+    }
+
+    public static function isValidSudokuNotesErrors(array $notesErrors): bool
+    {
+        return static::hasRight9x9Structure(
+            $notesErrors,
+            SudokuBoardStructureValidator::class . '::hasRightNotesErrorsValues'
         );
     }
 
@@ -74,7 +80,7 @@ class SudokuBoardStructureValidator
             || ((int) $value >= static::$minBoardValue && (int) $value <= static::$maxBoardValue));
     }
 
-    private static function hasRightBoardErrorsValue(bool|string|null $value): bool
+    private static function hasRightErrorsValue(bool|string|null $value): bool
     {
         return is_bool($value);
     }
@@ -93,6 +99,21 @@ class SudokuBoardStructureValidator
                 || (int) $value > static::$maxBoardValue
                 )
             ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static function hasRightNotesErrorsValues(array $notesErrors): bool
+    {
+        if (!static::hasRightSize($notesErrors)) {
+            return false;
+        }
+
+        foreach ($notesErrors as $value) {
+            if (!static::hasRightErrorsValue($value)) {
                 return false;
             }
         }

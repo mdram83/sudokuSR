@@ -18,7 +18,7 @@ final class SudokuBoardStructureValidatorTest extends TestCase
         'tooLong'        => [null, '', '1', 1, '9', 9, 2, 3,    4, 4],
     ];
 
-    private array $boardErrorsRow = [
+    private array $errorsRow = [
         'correct'    => [true, true, true, true, false, false, false, false,  false],
         'zero'       => [true, true, true, true, false, false, false, false,      0],
         'null'       => [true, true, true, true, false, false, false, false,   null],
@@ -44,6 +44,7 @@ final class SudokuBoardStructureValidatorTest extends TestCase
     private array $board;
     private array $boardErrors;
     private array $notes;
+    private array $notesErrors;
 
     private function setupBoard(mixed $row, int $rowsCount = 9): void
     {
@@ -60,6 +61,11 @@ final class SudokuBoardStructureValidatorTest extends TestCase
         $this->notes = array_fill(0, 9, array_fill(0, $rowsCount, $row));
     }
 
+    private function setupNotesErrors(mixed $row, int $rowsCount = 9): void
+    {
+        $this->notesErrors = array_fill(0, 9, array_fill(0, $rowsCount, $row));
+    }
+
     private function checkBoardService(): bool
     {
         return SudokuBoardStructureValidator::isValidSudokuBoard($this->board);
@@ -73,6 +79,11 @@ final class SudokuBoardStructureValidatorTest extends TestCase
     private function checkNotesService(): bool
     {
         return SudokuBoardStructureValidator::isValidSudokuNotes($this->notes);
+    }
+
+    private function checkNotesErrorsService(): bool
+    {
+        return SudokuBoardStructureValidator::isValidSudokuNotesErrors($this->notesErrors);
     }
 
     public function testCorrectBoard(): void
@@ -143,55 +154,55 @@ final class SudokuBoardStructureValidatorTest extends TestCase
 
     public function testCorrectBoardErrors(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['correct']);
+        $this->setupBoardErrors($this->errorsRow['correct']);
         $this->assertTrue($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsToLessRows(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['correct'], 8);
+        $this->setupBoardErrors($this->errorsRow['correct'], 8);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsToManyRows(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['correct'], 10);
+        $this->setupBoardErrors($this->errorsRow['correct'], 10);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsZero(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['zero']);
+        $this->setupBoardErrors($this->errorsRow['zero']);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsNull(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['null']);
+        $this->setupBoardErrors($this->errorsRow['null']);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsOne(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['one']);
+        $this->setupBoardErrors($this->errorsRow['one']);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsTrueString(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['trueString']);
+        $this->setupBoardErrors($this->errorsRow['trueString']);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsTooShort(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['tooShort']);
+        $this->setupBoardErrors($this->errorsRow['tooShort']);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
     public function testIncorrectBoardErrorsTooLong(): void
     {
-        $this->setupBoardErrors($this->boardErrorsRow['tooLong']);
+        $this->setupBoardErrors($this->errorsRow['tooLong']);
         $this->assertFalse($this->checkBoardErrorsService());
     }
 
@@ -200,8 +211,6 @@ final class SudokuBoardStructureValidatorTest extends TestCase
         $this->setupBoardErrors($this->notArray);
         $this->assertFalse($this->checkBoardErrorsService());
     }
-
-
 
     public function testCorrectNotes(): void
     {
@@ -260,5 +269,59 @@ final class SudokuBoardStructureValidatorTest extends TestCase
     {
         $this->setupNotes($this->notesRow['tooLong']);
         $this->assertFalse($this->checkNotesService());
+    }
+
+    public function testCorrectNotesErrors(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['correct']);
+        $this->assertTrue($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsToLessRows(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['correct'], 8);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsToManyRows(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['correct'], 10);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsZero(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['zero']);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsNull(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['null']);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsOne(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['one']);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsTrueString(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['trueString']);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsTooShort(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['tooShort']);
+        $this->assertFalse($this->checkNotesErrorsService());
+    }
+
+    public function testIncorrectNotesErrorsTooLong(): void
+    {
+        $this->setupNotesErrors($this->errorsRow['tooLong']);
+        $this->assertFalse($this->checkNotesErrorsService());
     }
 }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ActiveGameRepository;
 use App\Service\Game\SudokuKeysCoder;
 use App\Validator\IsValidSudokuNotes;
+use App\Validator\IsValidSudokuNotesErrors;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Validator\IsValidSudokuBoard;
@@ -118,6 +119,7 @@ class ActiveGame
         return $this;
     }
 
+    #[IsValidSudokuNotesErrors]
     public function getNotesErrors(): array
     {
         return SudokuKeysCoder::decodeNotes($this->notesErrors);

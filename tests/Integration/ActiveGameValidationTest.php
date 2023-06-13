@@ -10,8 +10,8 @@ final class ActiveGameValidationTest extends KernelTestCase
 {
     private array $boardRowCorrect   = [4, null, 6, 7, null, null, null, 5, null];
     private array $boardRowIncorrect = [4, null, 6, 7, null, null, null, 5,    0];
-    private array $boardErrorsRowCorrect   = [false, false, false, false, false, false, false, false, true];
-    private array $boardErrorsRowIncorrect = [false, false, false, false, false, false, false, false, null];
+    private array $errorsRowCorrect   = [false, false, false, false, false, false, false, false, true];
+    private array $errorsRowIncorrect = [false, false, false, false, false, false, false, false, null];
     private array $notesRowCorrect = [1, 2, 3, 4, 5, 6, null, '',  '9'];
     private array $notesRowIncorrect = [1, 2, 3, 4, 5, 6, null, '',    0];
 
@@ -19,6 +19,7 @@ final class ActiveGameValidationTest extends KernelTestCase
     private array $initialBoard;
     private array $boardErrors;
     private array $notes;
+    private array $notesErrors;
 
     private ValidatorInterface $validator;
     private ActiveGame $activeGame;
@@ -35,13 +36,15 @@ final class ActiveGameValidationTest extends KernelTestCase
         array $boardRow,
         array $initialBoard,
         array $boardErrorsRow,
-        array $notesRow
+        array $notesRow,
+        array $notesErrorsRow
     ): void
     {
         $this->board = array_fill(0, 9, $boardRow);
         $this->initialBoard = array_fill(0, 9, $initialBoard);
         $this->boardErrors = array_fill(0, 9, $boardErrorsRow);
         $this->notes = array_fill(0, 9, array_fill(0, 9, $notesRow));
+        $this->notesErrors = array_fill(0, 9, array_fill(0, 9, $notesErrorsRow));
 
         $this->populateValues();
     }
@@ -52,6 +55,7 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->activeGame->setInitialBoard($this->initialBoard);
         $this->activeGame->setBoardErrors($this->boardErrors);
         $this->activeGame->setNotes($this->notes);
+        $this->activeGame->setNotesErrors($this->notesErrors);
     }
 
     public function testCorrectBoardNoErrors(): void
@@ -59,8 +63,9 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->configureActiveGame(
             $this->boardRowCorrect,
             $this->boardRowCorrect,
-            $this->boardErrorsRowCorrect,
-            $this->notesRowCorrect
+            $this->errorsRowCorrect,
+            $this->notesRowCorrect,
+            $this->errorsRowCorrect
         );
 
         $errors = $this->validator->validate($this->activeGame);
@@ -72,8 +77,9 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->configureActiveGame(
             $this->boardRowIncorrect,
             $this->boardRowCorrect,
-            $this->boardErrorsRowCorrect,
-            $this->notesRowCorrect
+            $this->errorsRowCorrect,
+            $this->notesRowCorrect,
+            $this->errorsRowCorrect
         );
 
         $errors = $this->validator->validate($this->activeGame);
@@ -85,8 +91,9 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->configureActiveGame(
             $this->boardRowCorrect,
             $this->boardRowIncorrect,
-            $this->boardErrorsRowCorrect,
-            $this->notesRowCorrect
+            $this->errorsRowCorrect,
+            $this->notesRowCorrect,
+            $this->errorsRowCorrect
         );
 
         $errors = $this->validator->validate($this->activeGame);
@@ -98,8 +105,9 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->configureActiveGame(
             $this->boardRowCorrect,
             $this->boardRowCorrect,
-            $this->boardErrorsRowIncorrect,
-            $this->notesRowCorrect
+            $this->errorsRowIncorrect,
+            $this->notesRowCorrect,
+            $this->errorsRowCorrect
         );
 
         $errors = $this->validator->validate($this->activeGame);
@@ -111,8 +119,23 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->configureActiveGame(
             $this->boardRowCorrect,
             $this->boardRowCorrect,
-            $this->boardErrorsRowCorrect,
-            $this->notesRowIncorrect
+            $this->errorsRowCorrect,
+            $this->notesRowIncorrect,
+            $this->errorsRowCorrect
+        );
+
+        $errors = $this->validator->validate($this->activeGame);
+        $this->assertCount(1, $errors);
+    }
+
+    public function testIncorrectNotesErrorsHasError(): void
+    {
+        $this->configureActiveGame(
+            $this->boardRowCorrect,
+            $this->boardRowCorrect,
+            $this->errorsRowCorrect,
+            $this->notesRowCorrect,
+            $this->errorsRowIncorrect
         );
 
         $errors = $this->validator->validate($this->activeGame);
@@ -124,11 +147,12 @@ final class ActiveGameValidationTest extends KernelTestCase
         $this->configureActiveGame(
             $this->boardRowIncorrect,
             $this->boardRowIncorrect,
-            $this->boardErrorsRowIncorrect,
-            $this->notesRowIncorrect
+            $this->errorsRowIncorrect,
+            $this->notesRowIncorrect,
+            $this->errorsRowIncorrect
         );
 
         $errors = $this->validator->validate($this->activeGame);
-        $this->assertCount(4, $errors);
+        $this->assertCount(5, $errors);
     }
 }
