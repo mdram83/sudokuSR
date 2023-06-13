@@ -12,7 +12,7 @@ class SudokuBoardStructureValidator
     {
         return static::hasRight9x9Structure(
             $board,
-            __NAMESPACE__ . '\SudokuBoardStructureValidator::hasRightBoardValue'
+            SudokuBoardStructureValidator::class . '::hasRightBoardValue'
         );
     }
 
@@ -20,7 +20,7 @@ class SudokuBoardStructureValidator
     {
         return static::hasRight9x9Structure(
             $board,
-            __NAMESPACE__ . '\SudokuBoardStructureValidator::hasRightBoardErrorsValue'
+            SudokuBoardStructureValidator::class . '::hasRightBoardErrorsValue'
         );
     }
 
