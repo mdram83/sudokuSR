@@ -8,6 +8,8 @@ class SudokuBoardStructureValidator
     private static int $minBoardValue = 1;
     private static int $maxBoardValue = 9;
 
+    // TODO implement notesErrors validation methods, related constraints, validators, tests and add assert in Entity
+
     public static function isValidSudokuBoard(array $board): bool
     {
         return static::hasRight9x9Structure(
@@ -16,11 +18,19 @@ class SudokuBoardStructureValidator
         );
     }
 
-    public static function isValidSudokuBoardErrors(array $board): bool
+    public static function isValidSudokuBoardErrors(array $boardErrors): bool
     {
         return static::hasRight9x9Structure(
-            $board,
+            $boardErrors,
             SudokuBoardStructureValidator::class . '::hasRightBoardErrorsValue'
+        );
+    }
+
+    public static function isValidSudokuNotes(array $notes): bool
+    {
+        return static::hasRight9x9Structure(
+            $notes,
+            SudokuBoardStructureValidator::class . '::hasRightNotesValues'
         );
     }
 
@@ -40,9 +50,9 @@ class SudokuBoardStructureValidator
                 return false;
             }
 
-            foreach ($row as $value) {
+            foreach ($row as $content) {
 
-                if (!call_user_func($callback, $value)) {
+                if (!call_user_func($callback, $content)) {
                     return false;
                 }
             }
@@ -67,5 +77,26 @@ class SudokuBoardStructureValidator
     private static function hasRightBoardErrorsValue(bool|string|null $value): bool
     {
         return is_bool($value);
+    }
+
+    private static function hasRightNotesValues(array $notes): bool
+    {
+        if (!static::hasRightSize($notes)) {
+            return false;
+        }
+
+        foreach ($notes as $key => $value) {
+
+            if ($value !== null && $value !== '' && (
+                (int) $key + 1 !== (int) $value
+                || (int) $value < static::$minBoardValue
+                || (int) $value > static::$maxBoardValue
+                )
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
