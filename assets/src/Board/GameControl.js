@@ -2,10 +2,15 @@ import React from "react";
 import {SvgFeatherPause} from "../Svg/SvgFeatherPause";
 import {SvgFeatherPlay} from "../Svg/SvgFeatherPlay";
 import {MessageButton} from "./MessageButton";
+import {SaveInfo} from "./SaveInfo";
 
-export const Timer = (props) => {
+export const GameControl = (props) => {
     return (
-        <div className="grid grid-cols-1 gap-1 w-72 mt-0 mb-0.5">
+        <div className="grid grid-cols-2 gap-1 w-72 mt-0 mb-0.5">
+
+
+            <SaveInfo saveWarning={props.saveWarning} saveError={props.saveError} />
+
             <div className="flex justify-end text-sm">
 
                 <div className="mr-2 pt-0.5 text-blue-700 hover:cursor-pointer" onClick={props.toggleTimer}>

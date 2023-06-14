@@ -1,7 +1,6 @@
 import React from "react";
 import {copyArray} from "../Helpers/copyArray";
 import {SudokuNavigator} from "../Helpers/SudokuNavigator";
-import {Timer} from "./Timer";
 import {Grid} from "./Grid";
 import {Keypad} from "./Keypad";
 import {Actions} from "./Actions/Actions";
@@ -9,6 +8,7 @@ import {DifficultyBoard} from "./DifficultyBoard/DifficultyBoard";
 import {MessageButton} from "./MessageButton";
 import {configSave} from "../config/save";
 import {GameRepository} from "../Game/GameRepository";
+import {GameControl} from "./GameControl";
 
 export class Board extends React.Component {
     constructor(props) {
@@ -59,6 +59,8 @@ export class Board extends React.Component {
                 timer: this.props.gameSet.timer ?? 0,
                 consecutiveSaveErrors: 0,
                 savedOnWin: false,
+                saveWarning: false,
+                saveError: false,
             },
         }
     }
@@ -84,17 +86,16 @@ export class Board extends React.Component {
 
         setInterval(() => {
 
+            if (this.state.save.saveError) {
+                return;
+            }
+
             if (this.state.save.savedOnWin) {
                 return;
             }
 
             if (!this.state.timer.on && !this.state.win) {
                 return;
-            }
-
-            if (this.state.save.consecutiveSaveErrors >= configSave.saveRetries) {
-                console.log('not saving, too many errors');
-                return; // TODO some message for user
             }
 
             const gameSet = {
@@ -120,6 +121,8 @@ export class Board extends React.Component {
                     timer: saved ? state.timer.duration : state.save.timer,
                     consecutiveSaveErrors: saved ? 0 : state.save.consecutiveSaveErrors + 1,
                     savedOnWin: saved ? state.win : false,
+                    saveWarning: !saved,
+                    saveError: saved ? false : (state.save.consecutiveSaveErrors + 1 >= configSave.saveRetries),
                 },
             });
         });
@@ -592,7 +595,12 @@ export class Board extends React.Component {
                      onKeyDown={event => {this.handleKeyDown(event)}}
                 >
 
-                    <Timer timer={this.state.timer} toggleTimer={() => this.toggleTimer()}/>
+                    <GameControl
+                        saveWarning={this.state.save.saveWarning}
+                        saveError={this.state.save.saveError}
+                        timer={this.state.timer}
+                        toggleTimer={() => this.toggleTimer()}
+                    />
 
                     {this.state.timer.on && <div>
 

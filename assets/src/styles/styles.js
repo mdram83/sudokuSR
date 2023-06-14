@@ -36,4 +36,10 @@ export const styles = {
             active: ' hover:cursor-pointer ',
         },
     },
+    saveInfo: {
+        base: ' flex text-xs ',
+        default: ' text-gray-300 ',
+        warning: ' text-orange-300 ',
+        error: ' text-red-300 ',
+    },
 }
