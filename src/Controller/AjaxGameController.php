@@ -55,8 +55,6 @@ class AjaxGameController extends AbstractController
     ): Response
     {
         $gameSet = json_decode($request->getContent(), true);
-        // TODO validate inputs
-        // TODO consider validating final board against initial board and checking win status in backend
 
         $userId = $this->getAnonymousUserId($request);
 
@@ -82,8 +80,6 @@ class AjaxGameController extends AbstractController
 
         $sudoku = $sudokuRepository->find($gameSet['sudokuId']);
         $activeGame = $this->setActiveGameParams($activeGame, $gameSet, $sudoku, $userId);
-
-        // TODO finish validation (all params coming from frontend)
 
         $errors = $this->validator->validate($activeGame);
         if (count($errors) > 0) {
