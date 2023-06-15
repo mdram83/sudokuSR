@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GameController extends AbstractController
 {
-    #[Route('/play/', methods: ['GET'])]
+    #[Route('/play/', name: 'app_game_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $response = new Response($this->renderView('sudoku/index.html.twig'), 200);
