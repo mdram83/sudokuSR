@@ -50,6 +50,9 @@ class ActiveGame
     #[ORM\JoinColumn(nullable: false)]
     private ?Sudoku $sudoku = null;
 
+    #[ORM\ManyToOne]
+    private ?User $activeUser = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -176,6 +179,18 @@ class ActiveGame
     public function setSudoku(?Sudoku $sudoku): self
     {
         $this->sudoku = $sudoku;
+
+        return $this;
+    }
+
+    public function getActiveUser(): ?User
+    {
+        return $this->activeUser;
+    }
+
+    public function setActiveUser(?User $activeUser): self
+    {
+        $this->activeUser = $activeUser;
 
         return $this;
     }
