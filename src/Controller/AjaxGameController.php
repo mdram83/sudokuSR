@@ -5,9 +5,12 @@ namespace App\Controller;
 use App\Entity\ActiveGame;
 use App\Entity\FinishedGame;
 use App\Entity\Sudoku;
+use App\Entity\User;
 use App\Repository\ActiveGameRepository;
 use App\Repository\FinishedGameRepository;
 use App\Repository\SudokuRepository;
+use App\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,8 +47,10 @@ class AjaxGameController extends AbstractController
             $activeGame,
             $gameSet,
             $sudokuRepository->find($gameSet['sudokuId']),
-            $this->getAnonymousUserId()
+            $this->getAnonymousUserId(),
+            $this->getUser()
         );
+
         $this->validateActiveGameOrBadRequest($activeGame, $validator);
         $activeGameRepository->save($activeGame, true);
 
@@ -74,9 +79,16 @@ class AjaxGameController extends AbstractController
         return $this->json(true);
     }
 
-    private function setActiveGameParams(ActiveGame $activeGame, array $gameSet, Sudoku $sudoku, string $userId): void
+    private function setActiveGameParams(
+        ActiveGame $activeGame,
+        array $gameSet,
+        Sudoku $sudoku,
+        string $userId,
+        ?User $activeUser
+    ): void
     {
         $activeGame->setAnonymousUser($userId);
+        $activeGame->setActiveUser($activeUser);
         $activeGame->setSudoku($sudoku);
 
         $activeGame->setInitialBoard($gameSet['initialBoard']);
@@ -121,7 +133,7 @@ class AjaxGameController extends AbstractController
         $userId = $this->getAnonymousUserId();
 
         return $activeGameRepository->findOneBy(
-            $activeUser ? ['activeUser' => $activeUser] : ['anonymousUser' => $userId]
+            isset($activeUser) ? ['activeUser' => $activeUser] : ['anonymousUser' => $userId]
         );
     }
 
