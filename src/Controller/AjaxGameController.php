@@ -69,7 +69,8 @@ class AjaxGameController extends AbstractController
             $finishedGameRepository,
             $sudokuRepository,
             json_decode($request->getContent(), true),
-            $this->getAnonymousUserId()
+            $this->getAnonymousUserId(),
+            $this->getUser()
         );
 
         if ($activeGame = $this->getUserActiveGame($activeGameRepository)) {
@@ -106,25 +107,25 @@ class AjaxGameController extends AbstractController
         SudokuRepository $sudokuRepository,
         array $gameSet,
         string $userId,
-    ): FinishedGame
+        ?User $activeUser
+    ): void
     {
 
         $sudoku = $sudokuRepository->find($gameSet['sudokuId']);
 
-        if ($game = $finishedGameRepository->findOneBy(['sudoku' => $sudoku, 'anonymousUser' => $userId])) {
-            return $game;
+        if ($finishedGameRepository->findOneBy(['sudoku' => $sudoku, 'anonymousUser' => $userId]) !== null) {
+            return;
         }
 
         $game = new FinishedGame();
 
         $game->setSudoku($sudoku);
         $game->setAnonymousUser($userId);
+        $game->setActiveUser($activeUser);
         $game->setTimer($gameSet['timerDuration']);
         $game->setFinishedAt(new \DateTimeImmutable('now'));
 
         $finishedGameRepository->save($game, true);
-
-        return $game;
     }
 
     private function getUserActiveGame(ActiveGameRepository $activeGameRepository): ?ActiveGame

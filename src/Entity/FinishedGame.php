@@ -30,6 +30,9 @@ class FinishedGame
     #[ORM\Column]
     private ?\DateTimeImmutable $finishedAt = null;
 
+    #[ORM\ManyToOne]
+    private ?User $activeUser = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +82,18 @@ class FinishedGame
     public function setFinishedAt(\DateTimeImmutable $finishedAt): self
     {
         $this->finishedAt = $finishedAt;
+
+        return $this;
+    }
+
+    public function getActiveUser(): ?User
+    {
+        return $this->activeUser;
+    }
+
+    public function setActiveUser(?User $activeUser): self
+    {
+        $this->activeUser = $activeUser;
 
         return $this;
     }
